@@ -88,7 +88,7 @@ jobs:
     if: "!contains(github.event.head_commit.message, 'skip ci')"
     strategy:
       matrix:
-        package-set: ['GTK3', 'GTK4', 'Protobuf']
+        package-set: ['GTK3', 'GTK4', 'Protobuf', 'GStreamer']
 
     steps:
       - name: Harden Runner
@@ -125,6 +125,10 @@ jobs:
         if: matrix.package-set == 'Protobuf'
         run: >
           uv run gvsbuild build protobuf protobuf-c
+      - name: Build GStreamer
+        if: matrix.package-set == 'GStreamer'
+        run: >
+          uv run gvsbuild build --enable-gi gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-devtools gst-libav
       - name: Copy wheel files
         if: matrix.package-set == 'GTK3' || matrix.package-set == 'GTK4'
         run: |
